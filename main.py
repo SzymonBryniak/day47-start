@@ -1,10 +1,16 @@
 from bs4 import BeautifulSoup
 import requests
 import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 response = requests.get("https://appbrewery.github.io/instant_pot/")
+response.encoding = 'utf-8'
 amazon_page = response.text
 soup = BeautifulSoup(amazon_page, "html.parser")
+sender_email = "szymonbryniakproject@gmail.com"
+recipient_email = "oneplusszymonbryniak@gmail.com"
+app_password = "bjmm fcxz zojn vdju"
 
 def find_price():
   print(soup.find("p", class_="a-spacing-none a-text-left a-size-mini twisterSwatchPrice").text.strip()[1:])
@@ -12,9 +18,8 @@ def find_price():
   return message
 
 def product_name():
-  title = soup.find(id="title").text
-  return "product name"
-
+  title = soup.find(id="title").getText()
+  return title.rjust(25)
 
 def check_price(price):
   check = price < 100
@@ -24,7 +29,30 @@ def check_price(price):
       connection.login(user="szymonbryniakproject@gmail.com", password="bjmm fcxz zojn vdju")
       connection.sendmail(msg='Subject: {}\n\n{}'.format("Amazon Price Alert!", str(product_name()) + f" is now ${price}"),to_addrs="oneplusszymonbryniak@gmail.com", from_addr="szymonbryniakproject@gmail.com")
 
-check_price(find_price())
+def check_price_mime(price):
+    check = price < 100
+
+    if check:
+      body = product_name()
+      try:
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = recipient_email
+        msg['Subject'] = "Amazon Price Alert!"
+        msg.attach(MIMEText(body, 'plain', 'utf-8'))
+        with smtplib.SMTP("smtp.gmail.com", 587) as connection:
+                    connection.starttls()  # Secure the connection
+                    connection.login(user=sender_email, password=app_password)
+                    connection.sendmail(
+                        from_addr=sender_email,
+                        to_addrs=recipient_email,
+                        msg=msg.as_string()
+                    )
+                    print("Email sent successfully!")
+      except Exception as e:
+        print(f"Failed to send email: {e}")
+
+check_price_mime(find_price())
 
 
 
