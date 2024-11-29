@@ -1,6 +1,9 @@
 from bs4 import BeautifulSoup
 import requests
 import smtplib
+import re
+import functools
+import operator
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -17,9 +20,16 @@ def find_price():
   message = float(soup.find("p", class_="a-spacing-none a-text-left a-size-mini twisterSwatchPrice").text.strip()[1:])
   return message
 
+def reduce_function():
+  pass
+
 def product_name():
-  title = soup.find(id="title").getText()
-  return title.rjust(25)
+  content = soup.find(id="title").text
+  content_re = re.split("\s", content)
+  no_spaces = list(filter(lambda x: x != "", content_re))
+  concatenate_no_spaces = functools.reduce(operator.add, no_spaces)
+  print(concatenate_no_spaces)
+  return content.strip()
 
 def check_price(price):
   check = price < 100
@@ -52,7 +62,8 @@ def check_price_mime(price):
       except Exception as e:
         print(f"Failed to send email: {e}")
 
-check_price_mime(find_price())
+# check_price_mime(find_price())
+product_name()
 
 
 
