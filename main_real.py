@@ -33,8 +33,6 @@ sender_email = "szymonbryniakproject@gmail.com"
 recipient_email = "oneplusszymonbryniak@gmail.com"
 app_password = "bjmm fcxz zojn vdju"
 
-
-
 def find_price():
   print(soup.find(id="corePriceDisplay_desktop_feature_div").text.strip()[1:5])
   message = float(soup.find(id="corePriceDisplay_desktop_feature_div").text.strip()[1:5])
@@ -61,7 +59,7 @@ def check_price_mime(price):
     check = price < 100
 
     if check:
-      body = product_name()
+      body = product_name() + f' is now ${price}'
       try:
         msg = MIMEMultipart()
         msg['From'] = sender_email
