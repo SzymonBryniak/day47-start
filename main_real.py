@@ -24,7 +24,7 @@ headers = {
 }
 
 
-response = requests.get("https://appbrewery.github.io/instant_pot/", headers=headers)
+response = requests.get("https://www.amazon.com/dp/B075CYMYK6?psc=1&ref_=cm_sw_r_cp_ud_ct_FM9M699VKHTT47YD50Q6", headers=headers)
 response.raise_for_status
 response.encoding = 'utf-8'
 amazon_page = response.text
