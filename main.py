@@ -27,9 +27,10 @@ def product_name():
   content = soup.find(id="title").text
   content_re = re.split("\s", content)
   no_spaces = list(filter(lambda x: x != "", content_re))
-  concatenate_no_spaces = functools.reduce(operator.add, no_spaces)
-  print(concatenate_no_spaces)
-  return content.strip()
+  with_spaces = " ".join(no_spaces)
+  # concatenate_no_spaces = functools.reduce(operator.add, no_spaces)
+  
+  return with_spaces
 
 def check_price(price):
   check = price < 100
@@ -62,8 +63,8 @@ def check_price_mime(price):
       except Exception as e:
         print(f"Failed to send email: {e}")
 
-# check_price_mime(find_price())
-product_name()
+check_price_mime(find_price())
+
 
 
 
